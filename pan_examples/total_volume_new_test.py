@@ -18,6 +18,7 @@ from anuga import Reflective_boundary
 from anuga.operators.rate_operators import Rate_operator
 from anuga import Region
 from anuga import rectangular_cross
+import numpy as num
 
 # ------------------------------------------------------------------------------
 # Setup computational domain
@@ -156,11 +157,11 @@ nodes[1].create_opening(4, 1.0, 1.0, 0.6, 1.6, 1.0)
 print("node1_is_open?:",nodes[1].is_coupled)
 
 stop_release_water_time = 2 # the time for stopping releasing the water
-original_volume = 0 # used for storing the initial volume
-for t in domain.evolve(yieldstep=1.0, finaltime=10.0):
+domain.set_name("anuga_swmm")
+for t in domain.evolve(yieldstep=1.0, finaltime=60.0):
     print("\n")
     print(f"coupling step: {t}")
-    # domain.print_timestepping_statistics()
+    domain.print_timestepping_statistics()
     if t < stop_release_water_time:
         # assume we need to release the water into the domain for first two seconds
         op_inlet.set_rate(23.0)
@@ -183,11 +184,19 @@ for t in domain.evolve(yieldstep=1.0, finaltime=10.0):
             op_inlet.set_rate(0)
             op_outlet.set_rate(0)
         else:
+            #Ming's code
             print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
             print("Oulet: ", nodes[1].total_inflow)
             op_inlet.set_rate(-1 * volumes_in_out['Inlet'])
-            op_outlet.set_rate(nodes[1].total_inflow)
+            Q = nodes[1].total_inflow
+            fid = op_outlet.full_indices
+            rate = Q / num.sum(op_outlet.areas[fid])
+            op_outlet.set_rate(rate)
 
+            # op_outlet.set_rate(nodes[1].total_inflow)
+            # Q = 5
+            # fid = op1.full_indices
+            # rate = Q / num.sum(op1.areas[fid])
 
 
 

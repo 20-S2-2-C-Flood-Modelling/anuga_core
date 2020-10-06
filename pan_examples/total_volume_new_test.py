@@ -157,7 +157,7 @@ print("node1_is_open?:",nodes[1].is_coupled)
 
 stop_release_water_time = 2 # the time for stopping releasing the water
 original_volume = 0 # used for storing the initial volume
-for t in domain.evolve(yieldstep=1.0, finaltime=63.0):
+for t in domain.evolve(yieldstep=1.0, finaltime=10.0):
     print("\n")
     print(f"coupling step: {t}")
     # domain.print_timestepping_statistics()
@@ -173,17 +173,19 @@ for t in domain.evolve(yieldstep=1.0, finaltime=63.0):
 
         nodes[0].overland_depth = get_depth(op_inlet)
         print("inlet overland depth: ", get_depth(op_inlet))
+        volumes_in_out = volumes[-1][-1]
+        print(volumes_in_out)
 
         if t <= stop_release_water_time+1:
             # no water exchange as the first two steps from swmm and anuga did not match.
-            print("Volume total at node Inlet" ":", volumes["Inlet"])
+            print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
             print("Oulet: ", nodes[1].total_inflow)
             op_inlet.set_rate(0)
             op_outlet.set_rate(0)
         else:
-            print("Volume total at node Inlet" ":", volumes["Inlet"])
+            print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
             print("Oulet: ", nodes[1].total_inflow)
-            op_inlet.set_rate(-1 * volumes['Inlet'])
+            op_inlet.set_rate(-1 * volumes_in_out['Inlet'])
             op_outlet.set_rate(nodes[1].total_inflow)
 
 

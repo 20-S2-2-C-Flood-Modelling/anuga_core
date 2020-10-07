@@ -147,51 +147,72 @@ nodes = [Nodes(sim)[names] for names in node_names]
 links = [Links(sim)[names] for names in link_names]
 
 # type, area, length, orifice_coeff, free_weir_coeff, submerged_weir_coeff
-nodes[0].create_opening(4, 1.0, 1.0, 0.6, 1.6, 1.0)
-nodes[0].coupling_area = 1.0
+nodes[0].create_opening(4, 0.785, 1.0, 0.6, 1.6, 1.0)
+nodes[0].coupling_area = 0.785
 
 # TODO: setup the outlet node
-nodes[1].create_opening(4, 1.0, 1.0, 0.6, 1.6, 1.0)
+nodes[1].create_opening(4, 0.785, 1.0, 0.6, 1.6, 1.0)
+nodes[1].coupling_area = 0.785
 
 
 print("node1_is_open?:",nodes[1].is_coupled)
 
-stop_release_water_time = 2 # the time for stopping releasing the water
+stop_release_water_time = 6 # the time for stopping releasing the water
+#the realse time must larger than the yieldstep
+
 domain.set_name("anuga_swmm")
-for t in domain.evolve(yieldstep=1.0, finaltime=60.0):
+for t in domain.evolve(yieldstep=1.0, finaltime=55.0+stop_release_water_time+10):
     print("\n")
     print(f"coupling step: {t}")
-    domain.print_timestepping_statistics()
+    #domain.print_timestepping_statistics()
     if t < stop_release_water_time:
         # assume we need to release the water into the domain for first two seconds
-        op_inlet.set_rate(23.0)
+        op_inlet.set_rate(2)
+        print("total volume: ", domain.get_water_volume())
     else:
         # set the overland_depth
         # TODO: set up the overland depth, modify this function
 
         print("total volume: ",domain.get_water_volume())
-        volumes = sim.coupling_step(1.0)
 
-        nodes[0].overland_depth = get_depth(op_inlet)
+        op_inlet.set_rate(0)
+        op_outlet.set_rate(0)
+
+
+
         print("inlet overland depth: ", get_depth(op_inlet))
-        volumes_in_out = volumes[-1][-1]
-        print(volumes_in_out)
 
-        if t <= stop_release_water_time+1:
-            # no water exchange as the first two steps from swmm and anuga did not match.
-            print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
-            print("Oulet: ", nodes[1].total_inflow)
-            op_inlet.set_rate(0)
-            op_outlet.set_rate(0)
-        else:
-            #Ming's code
-            print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
-            print("Oulet: ", nodes[1].total_inflow)
-            op_inlet.set_rate(-1 * volumes_in_out['Inlet'])
-            Q = nodes[1].total_inflow
-            fid = op_outlet.full_indices
-            rate = Q / num.sum(op_outlet.areas[fid])
-            op_outlet.set_rate(rate)
+
+        if t>= stop_release_water_time+10:
+            #start couple
+            nodes[0].overland_depth = get_depth(op_inlet)
+            volumes = sim.coupling_step(1.0)
+
+            volumes_in_out = volumes[-1][-1]
+            if t == stop_release_water_time+10:
+                print("volumes",volumes)
+                # no water exchange as the first two steps from swmm and anuga did not match.
+
+                print("Oulet: ", nodes[1].total_inflow)
+                inlet_volume = (volumes[0][-1]["Inlet"])
+                print("Volume total at node Inlet" ":", inlet_volume)
+                fid = op_inlet.full_indices
+                op_inlet.set_rate(-1*inlet_volume/num.sum(op_inlet.areas[fid]))
+                #op_inlet.set_rate(-1*volumes[0][-1]["Inlet"])
+                op_outlet.set_rate(nodes[1].total_inflow/nodes[1].coupling_area)
+
+            else:
+                if t == stop_release_water_time+11:
+                    print("volumes",volumes)
+                #Ming's code
+                print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
+                print("Oulet: ", nodes[1].total_inflow)
+                op_inlet.set_rate(-1 * volumes_in_out['Inlet']/nodes[0].coupling_area)
+                Q = nodes[1].total_inflow
+                fid = op_outlet.full_indices
+                #
+                rate = Q / num.sum(op_outlet.areas[fid])
+                op_outlet.set_rate(rate)
 
             # op_outlet.set_rate(nodes[1].total_inflow)
             # Q = 5

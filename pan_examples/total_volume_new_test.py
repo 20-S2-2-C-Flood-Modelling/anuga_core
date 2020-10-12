@@ -26,7 +26,7 @@ import numpy as num
 
 length = 15.
 width = 5.
-dx = dy = 0.5  # .1           # Resolution: Length of subdivisions on both axes
+dx = dy = 0.2  # .1           # Resolution: Length of subdivisions on both axes
 
 points, vertices, boundary = rectangular_cross(int(length / dx), int(width / dy),
                                                len1=length, len2=width)
@@ -94,9 +94,12 @@ def get_cir(radius=None, center=None, domain=None, size=None, polygons=None):
             opp2.region = Region(domain, poly=polygon2, expand_polygon=True)
 
     if radius is not None and center is not None:
-
         region1 = Region(domain, radius=radius, center=center)
-        region2 = Region(domain, radius=radius - size, center=center)
+        if size < 0.03:
+            #if the size of triangle is too small then this method cannot get the boundary indices.
+            region2 = Region(domain, radius=radius - size * 4, center=center)
+        else:
+            region2 = Region(domain, radius=radius - size, center=center)
 
     if radius is None and center is None:
         indices = [x for x in opp1.region.indices if x not in opp2.region.indices]
@@ -107,13 +110,12 @@ def get_cir(radius=None, center=None, domain=None, size=None, polygons=None):
 
 
 def get_depth(operator):
-    # FIXME: according to the index return the overland depth of specific area
 
     # need check each triangle's area should be dx*dy/4
     # here is the inlet depth
-    len_boud_pipe = len(operator.stage_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.0625)])[0])
-    overland_depth = sum(operator.stage_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.0625)])
-                         [0]-operator.elev_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.0625)])
+    len_boud_pipe = len(operator.stage_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.01)])[0])
+    overland_depth = sum(operator.stage_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.01)])
+                         [0]-operator.elev_c[:].take([get_cir(radius=0.5, center=(2.0, 2.0), domain=domain, size=0.01)])
                          [0]) / len_boud_pipe
     # the overland_depth should be got from ANUGA directly
 
@@ -150,74 +152,82 @@ links = [Links(sim)[names] for names in link_names]
 nodes[0].create_opening(4, 0.785, 1.0, 0.6, 1.6, 1.0)
 nodes[0].coupling_area = 0.785
 
-# TODO: setup the outlet node
+
 nodes[1].create_opening(4, 0.785, 1.0, 0.6, 1.6, 1.0)
 nodes[1].coupling_area = 0.785
 
 
 print("node1_is_open?:",nodes[1].is_coupled)
 
-stop_release_water_time = 6 # the time for stopping releasing the water
-#the realse time must larger than the yieldstep
+def total_vol_evovle(stop_release_water_time,release_water):
+    """
+    stop_release_water: double
+                        It should be able to divide by 1.0 and less than 55.0.
+    release_water: double
+                    It should be greater than 0.0.
+    """
+    op_release_inlet = Rate_operator(domain, radius=0.5, center=(1., 4.))
+    # set a new inlet location to avoid the wave over the swmm pipe's inlet.
+    domain.set_name("anuga_swmm")
 
-domain.set_name("anuga_swmm")
-for t in domain.evolve(yieldstep=1.0, finaltime=55.0+stop_release_water_time+10):
-    print("\n")
-    print(f"coupling step: {t}")
-    #domain.print_timestepping_statistics()
-    if t < stop_release_water_time:
-        # assume we need to release the water into the domain for first two seconds
-        op_inlet.set_rate(2)
-        print("total volume: ", domain.get_water_volume())
-    else:
-        # set the overland_depth
-        # TODO: set up the overland depth, modify this function
+    for t in domain.evolve(yieldstep=1.0, finaltime=55.0 + stop_release_water_time + 10):
+        """
+        The coupling step is 1.0 second and the finaltime is 55 seconds for the coupling model to evolve,
+        10 seconds for the waiting time in order to make the initial water calm down. 
+        """
+        if t < stop_release_water_time:
+            # assume we need to release the water into the domain for first "stop_release_water_time" seconds
+            op_release_inlet.set_rate(release_water)
 
-        print("total volume: ",domain.get_water_volume())
+        else:
+            #After release the water into the left domain part, we would closed the inlet for calming down the waves.
+            op_release_inlet.set_rate(0)
+            op_outlet.set_rate(0)
 
-        op_inlet.set_rate(0)
-        op_outlet.set_rate(0)
+            if t >= stop_release_water_time + 10:
+                # start couple
+                nodes[0].overland_depth = get_depth(op_inlet)
+                volumes = sim.coupling_step(1.0)
+                volumes_in_out = volumes[-1][-1]
+                if t == stop_release_water_time + 10:
+                    """
+                    The first return of the pyswmm is different. I choose the larger answer to represent as the 
+                    first second's volume.
+                    """
+                    inlet_volume = volumes[0][-1]["Inlet"]
+                    fid = op_inlet.full_indices
+                    op_inlet.set_rate(-1 * inlet_volume / num.sum(op_inlet.areas[fid]))
+                    op_outlet.set_rate(nodes[1].total_inflow / nodes[1].coupling_area)
+
+                else:
+                    op_inlet.set_rate(-1 * volumes_in_out['Inlet'] / nodes[0].coupling_area)
+                    Q = nodes[1].total_inflow
+                    fid = op_outlet.full_indices
+                    rate = Q / num.sum(op_outlet.areas[fid])
+                    op_outlet.set_rate(rate)
+
+        if t == 65+stop_release_water_time:
+            print("\n")
+            print(f"coupling step: {t}")
+            print("total volume: ", domain.get_water_volume())
+            print("stop time",stop_release_water_time)
+            print("release water:",release_water*stop_release_water_time)
 
 
 
-        print("inlet overland depth: ", get_depth(op_inlet))
+total_vol_evovle(4,3)
+#Here is used for changing argument conveniently.
 
 
-        if t>= stop_release_water_time+10:
-            #start couple
-            nodes[0].overland_depth = get_depth(op_inlet)
-            volumes = sim.coupling_step(1.0)
 
-            volumes_in_out = volumes[-1][-1]
-            if t == stop_release_water_time+10:
-                print("volumes",volumes)
-                # no water exchange as the first two steps from swmm and anuga did not match.
 
-                print("Oulet: ", nodes[1].total_inflow)
-                inlet_volume = (volumes[0][-1]["Inlet"])
-                print("Volume total at node Inlet" ":", inlet_volume)
-                fid = op_inlet.full_indices
-                op_inlet.set_rate(-1*inlet_volume/num.sum(op_inlet.areas[fid]))
-                #op_inlet.set_rate(-1*volumes[0][-1]["Inlet"])
-                op_outlet.set_rate(nodes[1].total_inflow/nodes[1].coupling_area)
 
-            else:
-                if t == stop_release_water_time+11:
-                    print("volumes",volumes)
-                #Ming's code
-                print("Volume total at node Inlet" ":", volumes_in_out["Inlet"])
-                print("Oulet: ", nodes[1].total_inflow)
-                op_inlet.set_rate(-1 * volumes_in_out['Inlet']/nodes[0].coupling_area)
-                Q = nodes[1].total_inflow
-                fid = op_outlet.full_indices
-                #
-                rate = Q / num.sum(op_outlet.areas[fid])
-                op_outlet.set_rate(rate)
 
-            # op_outlet.set_rate(nodes[1].total_inflow)
-            # Q = 5
-            # fid = op1.full_indices
-            # rate = Q / num.sum(op1.areas[fid])
+
+
+
+
+
 
 
 

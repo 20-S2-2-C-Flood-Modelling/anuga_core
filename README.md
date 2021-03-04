@@ -119,7 +119,7 @@ Sprint 5 (30/09/2020 - 14/10/2020)
 </details>
 
 <details>
-  <summary>2020 meeting minutes</summary>
+  <summary>2021 meeting minutes</summary>
 
 Sprint 1 (start of semester - 10/03/2021)
 

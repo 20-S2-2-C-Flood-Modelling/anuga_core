@@ -126,6 +126,11 @@ Sprint 1 (start of semester - 10/03/2021)
 > [2021-02-24 Client Meeting](https://docs.google.com/document/d/1tlAb2cCmxQuTGya8f3YNSQieG8ebsSQfv_pd375Gjx0/edit?usp=sharing)
 
 > [2021-02-25 Team Meeting](https://docs.google.com/document/d/1CbNG8xcdKbR5MTqaRrjgpwpSMjHulHrIOBFyywPpWQc/edit?usp=sharing)
+
+> [2021-03-03 Client Meeting](https://docs.google.com/document/d/140zjvChWzgg-UkGh2leowSyUIkO-NT8p289_fg2Viag/edit?usp=sharing) 
+
+> [2021-03-04 Team Meeting](https://docs.google.com/document/d/1m4uDIB91wyEdHaYlwV-_yp1zULucCR1GoFj8F4SHr4s/edit?usp=sharing)
+
 </details>
 
 ### Development Artefacts

@@ -23,8 +23,8 @@ This project will extend the ANUGA Hydro software, which is capable of hydrodyna
 |:--------------:|:------:|:---------------|:---------------|
 | **Zheyuan Zhang** | u6870923 | ANUGA developer<br> ANUGA Viewer supporter| Documentation (grammar) reviewer<br>Code reviewer (ANUGA & SWMM) |
 | **Xingnan Pan** | u6744662 | ANUGA developer<br>client manager | Test developer<br>Code reviewer (ANUGA & SWMM)<br>Minutes taker |
-| **Chen Huang** | u6735118 | SWMM developer<br>Spokeperson | Code reviewer (ANUGA)<br>Landing page maintainer<br>Minutes taker |
-| **Lixin Hou** | u6456457 | ANUGA developer<br> ANUGA tester<br>Deputy spokeperson <br>Client Manager |Document author<br>Minutes taker| 
+| **Chen Huang** | u6735118 | SWMM developer<br>Spokesperson | Code reviewer (ANUGA)<br>Landing page maintainer<br>Minutes taker |
+| **Lixin Hou** | u6456457 | ANUGA developer<br> ANUGA tester<br>Deputy spokesperson <br>Client Manager |Document author<br>Minutes taker| 
 | **Mingda Zheng** | u6686733 | SWMM developer<br>Quality manager | Code reviewer (SWMM&ANUGA)<br>Test developer|
 | **Yijie Liu** | u6890141 | ANUGA developer<br>Quality manager | Test developer<br>Documentation author |
 | **Zijun Zhang** | u6904534 | SWMM developer<br>Documentation author | Code reviewer (ANUGA) |

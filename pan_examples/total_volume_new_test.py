@@ -169,7 +169,6 @@ def total_vol_evovle(stop_release_water_time,release_water):
     op_release_inlet = Rate_operator(domain, radius=0.5, center=(1., 4.))
     # set a new inlet location to avoid the wave over the swmm pipe's inlet.
     domain.set_name("anuga_swmm")
-
     for t in domain.evolve(yieldstep=1.0, finaltime=55.0 + stop_release_water_time + 10):
         """
         The coupling step is 1.0 second and the finaltime is 55 seconds for the coupling model to evolve,
@@ -178,7 +177,6 @@ def total_vol_evovle(stop_release_water_time,release_water):
         if t < stop_release_water_time:
             # assume we need to release the water into the domain for first "stop_release_water_time" seconds
             op_release_inlet.set_rate(release_water)
-
         else:
             #After release the water into the left domain part, we would closed the inlet for calming down the waves.
             op_release_inlet.set_rate(0)
@@ -215,7 +213,7 @@ def total_vol_evovle(stop_release_water_time,release_water):
 
 
 
-total_vol_evovle(4,3)
+total_vol_evovle(2,2)
 #Here is used for changing argument conveniently.
 
 

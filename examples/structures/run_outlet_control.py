@@ -226,7 +226,6 @@ domain.set_boundary({'left': Btus, 'right': Btds, 'top': Br, 'bottom': Br})
 #------------------------------------------------------------------------------
 
 for t in domain.evolve(yieldstep = 1, finaltime = 100):
-    print (domain.timestepping_statistics())
-
+    domain.print_timestepping_statistics()
     domain.print_operator_timestepping_statistics()
 

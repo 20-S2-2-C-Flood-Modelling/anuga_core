@@ -252,11 +252,11 @@ domain.set_boundary({'left': Btus, 'right': Br, 'top': Br, 'bottom': Br})
 #------------------------------------------------------------------------------
 
 for t in domain.evolve(yieldstep = 1, finaltime = 100):
-    print (domain.timestepping_statistics())
-    print (domain.volumetric_balance_statistics())
-    for i, culvert in enumerate(culverts):
-        print ('culvert: ', i)
-        print (culvert.timestepping_statistics())
+    domain.print_timestepping_statistics()
+    domain.print_volumetric_balance_statistics()
+    # for i, culvert in enumerate(culverts):
+    #     print ('culvert: ', i)
+    #     culvert.print_timestepping_statistics()
     
 
     
@@ -273,11 +273,11 @@ FN = 'profile.dat'
 
 profile.run(s, FN)
     
-print 'That took %.2f seconds' %(time.time()-t0)
+print ('That took %.2f seconds' %(time.time()-t0))
 
 S = pstats.Stats(FN)
 #S.sort_stats('time').print_stats(20)
 s = S.sort_stats('cumulative').print_stats(30)
 
-print s
+print (s)
 """

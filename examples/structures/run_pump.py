@@ -17,8 +17,8 @@ inlet2_poly = [[[end_point1[0], 45.0],[end_point1[0],55],
               
 
 def tobreaklines(riverWall):
-    riverWall_values = list(riverWall.values())
-    return [numpy.array(riverWall_values[0])[:,0:2].tolist()]
+    rw_values = list(riverWall.values())
+    return [numpy.array(rw_values[0])[:,0:2].tolist()]
 
 
 boundaryPolygon = [ [0., 0.], [0., 100.], [100.0, 100.0], [100.0, 0.0]]

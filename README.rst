@@ -12,120 +12,145 @@
     :alt: Latest Version
 
 
-=====
-ANUGA
-=====
+======================================
+ANUGA Community TechLauncher Project
+======================================
 
 .. contents::
 
-What is ANUGA?
+Overview
 --------------
 
-ANUGA (pronounced "AHnooGAH") is open-source software for the simulation of
-the shallow water equation, in particular it can be used to model tsunamis
-and floods.
+The existing ANUGA Hydro software has been used to model floods for more than a decade, with excellent results. But for smaller floods, it has a tendency to over estimate the flood area, due to being unable to model underground drainage systems.
 
-ANUGA is a python package with some C extensions (and an optional
-fortran extension). At present ANUGA has not been ported to python 3.
-We recommend using python 2.7
-
-Developed at Geoscience Australia and Mathematical Sciences Institute at the
-Australian National University.
-
-Copyright Commonwealth of Australia (Geoscience Australia) and Australian National University 2017
+This project will extend the ANUGA Hydro software, which is capable of hydrodynamic modelling, by coupling with the US EPA's Storm Water Management Model (SWMM), thus adding to it the ability to model the effects of underground drainage systems.
 
 
-Installation
-------------
+Stakeholders
+--------------
 
-For installation instructions, see
-`INSTALL.rst <https://github.com/GeoscienceAustralia/anuga_core/blob/master/INSTALL.rst>`_
+- **The sponsors:**
 
+    - Professor Stephen Roberts, ANU
+    
+    - Dr Ole Nielsen, Geoscience Australia
 
-Documentation and Help
-----------------------
+- **The user representatives (flood modellers):**
 
-ANUGA documentation is available in the doc folder. In particular the
-`user_manual <https://github.com/GeoscienceAustralia/anuga_core/raw/master/doc/anuga_user_manual.pdf>`_
-
-Also helpful information is available noline at
-
-    http://anuga.anu.edu.au
-
-A collection of online jupyter notebooks which can run under google's colab environment can be found at:
-
-    https://github.com/stoiver/anuga-clinic-2018
-
-Mailing Lists
--------------
-
-You can subscribe to our mailing via:
-
-    https://lists.sourceforge.net/lists/listinfo/anuga-user
-
-and send questions using the address
-
-    anuga-user@lists.sourceforge.net
+    - Rudy Van Drie, Balance Research and Development
+    
+    - Dr Petar Milevski, Civil Engineer Urban Drainage, Wollongong City Council
 
 
-Web sites
----------
+Documentation
+----------------
+Google Docs Folder
+^^^^^^^^^^^^^^^^^^^^
 
-The user's site is: http://anuga.anu.edu.au/
-The WikiPedia for ANUGA is: https://en.wikipedia.org/wiki/ANUGA_Hydro
-The GitHub repository for ANUGA is: https://github.com/GeoscienceAustralia/anuga_core
+    `All Materials <https://drive.google.com/drive/folders/16Z4aiFDwxBb5qRQU78bVDZmsvFZOTPmk?usp=sharing>`_
 
-A viewer is available for displaying the ANUGA sww output files. ANUGA viewer repository is: https://github.com/GeoscienceAustralia/anuga-viewer
+Statement of Work
+^^^^^^^^^^^^^^^^^^^
+
+    `SoW_2020_S2 <https://drive.google.com/file/d/1Hb2j2KeJzwX2FM4dNMCTmS8V8kXxqOQD/view?usp=sharing>`_
+
+    `SoW_2021_S1 <https://drive.google.com/file/d/1d2Pmq4ShnWwFyCtPxR9tJLyTk23iW4mc/view?usp=sharing>`_
+
+Sprint Stories
+^^^^^^^^^^^^^^^
+
+    `Trello <https://trello.com/b/Z45C7crP/agile-sprint-board>`_
+
+Communication
+^^^^^^^^^^^^^^^
+
+    `Slack <https://anu-flood-modelling.slack.com>`_
+
+    Email
+    
+    Zoom
+
+Meeting Minutes
+^^^^^^^^^^^^^^^^^
 
 
+Development Artefacts
+^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Latest source code
-------------------
+Reflection
+^^^^^^^^^^^^
 
-The latest development version of ANUGA's sources are is available at:
 
-    https://github.com/GeoscienceAustralia/anuga_core
+Client-Provided Resources
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-They can be downloaded as a zip file or using the Git client as follows
+    `All Materials <https://drive.google.com/drive/folders/1j-Ex4TJj_q8MZ6cUNJItfzBr-FuQCQ7A?usp=sharing>`_
+    
+    `Ideas shared on Slack <https://docs.google.com/document/d/1uRRW0dEOZgfzpxXeJTrC4DeBQovkaaz06gjDWiu8CeQ/edit?usp=sharing>`_
 
-    git clone https://github.com/GeoscienceAustralia/anuga_core (for read only)
-    git clone git@github.com:GeoscienceAustralia/anuga_core.git (to contribute)
+Decisions
+^^^^^^^^^^^
 
-For the latter option see e.g. https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/ for instructions on how to authenticate using ssh keys.
+    `Log for Small Decisions <https://docs.google.com/spreadsheets/d/1uPZlRMNaRBlZnUdfNPVQ4e_S48npiRRkqP9GHJUyXS4/edit?usp=sharing>`_
+    
+    `Template for Large Decisions <https://docs.google.com/document/d/11qM3a2_Abr2oGtYLgIPA4QjgSELj9RFD4IboVFuBqEg/edit?usp=sharing>`_
+    
+    `2020-08-05 Continuous Integration Tool Selection <https://docs.google.com/document/d/1xt46NBabq5xelkVywf4NLt9Su33GicAFldKurt747fs/edit?usp=sharing>`_
+    
+    `2020-09-14 Decision on how to modify SWMM <https://docs.google.com/document/d/1oXyEDcNLuEXH-2n9xcsxBRuCfLxSPdgJ_H7j2IfxP_E/edit?usp=sharing>`_
 
-Bug reports
+
+Timeline
 -----------
 
-To search for bugs or report them, please use the ANUGA's Bug Tracker at:
+We are doing two-week sprints, with client meetings to close each sprint on Wednesday 5:00PM Canberra time, and team meetings for sprint retrospectives and sprint planning on Wednesday 7:00PM Canberra time.
 
-    https://github.com/GeoscienceAustralia/anuga_core/issues
+The first sprint will be a bit longer, so that the rest of the sprints will end just before the Week 6 and Week 10 audits. This means the first sprint will end Wednesday of Week 4.
 
+- **2020-s2-timeline**
 
-Developer information
----------------------
-
-If you would like to take part in ANUGA development, take a look
-at `CONTRIBUTING.rst <https://github.com/GeoscienceAustralia/anuga_core/blob/master/CONTRIBUTING.rst>`_.
+- **2021-s1-timeline**
 
 
-License information
--------------------
-
-See the file `LICENSE.txt <https://github.com/GeoscienceAustralia/anuga_core/blob/master/LICENCE.txt>`_
-for information on the history of this software, terms & conditions for usage,
-and a DISCLAIMER OF ALL WARRANTIES.
-
-Contacts
+Risks
 --------
-At the Australian National University:
 
-**Stephen Roberts**
-*Lead Developer*
-<stephen.roberts@anu.edu.au>
 
-At Geoscience Australia:
+Tools and Client Requirements
+--------------------------------
 
-**Gareth Davies**
-*Developer*
-<gareth.davies@ga.gov.au>
+- **The project should be developed in Github**
+
+    - Each member is able to test in a branch
+    
+    - Using pull request to get the task review from others
+    
+    - Only tested and review code should be merged into the main branch
+
+- **The project is mainly developed on Ubuntu 20.04**
+
+    - This means that team members will need to install a virtual machine or dual boot. All members have already done so.
+
+- **Setup Continuous Integration (CI) tools to test on three platforms (Windows, MacOS and Ubuntu) automatically.**
+
+    - This was a Sprint 1 task for two members of the team. They have already set up Appveyor and TravisCI to handle this.
+
+- **Software standards**
+
+    - The Python code should follow the `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ standard apart from agreed exceptions.
+    
+    - All code, apart from the most trivial, should have corresponding unit tests.
+    
+    - Model behaviour should be tested end to end with real data.
+    
+    - Tests should be integrated with a CI server.
+
+- **The standard official version of SWMM from the US EPA website is only available for Windows, so we will use another open-source project called PySWMM by Open Water Analytics.**
+
+
+Technical Constraints
+------------
+
+The end modelling software must be a coupling between ANUGA and SWMM. There are no other open-source options for this type of software. And even if there were, the team was commissioned by the clients to improve the existing ANUGA Hydro software in a specific way.
+

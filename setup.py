@@ -30,7 +30,7 @@ builtins.__ANUGA_SETUP__ = True
 #==============================================================================
 DISTNAME = 'anuga'
 DESCRIPTION = 'A set of python modules for tsunami and flood modelling'
-with open('README.rst') as f:
+with open('README_Techlauncher_Project.rst') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'Stephen Roberts'
 MAINTAINER_EMAIL = 'stephen.roberts@anu.edu.au'

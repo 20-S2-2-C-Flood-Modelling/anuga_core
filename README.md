@@ -133,6 +133,10 @@ Sprint 1 (start of semester - 10/03/2021)
 
 > [2021-03-04 Team Meeting](https://docs.google.com/document/d/1m4uDIB91wyEdHaYlwV-_yp1zULucCR1GoFj8F4SHr4s/edit?usp=sharing)
 
+> [2021-03-10 Client Meeting](https://docs.google.com/document/d/1vLAQ97Bn8G8m9l99jzJfWQmu_ZrAYXEGph5DNX4GIvo/edit?usp=sharing) 
+
+> [2021-03-11 Team Meeting](https://docs.google.com/document/d/1EMLx0VP1sVviFodUJSAYhRie13j4pxxVePzEMKXQ7Ac/edit?usp=sharing)
+
 </details>
 
 ### Development Artefacts

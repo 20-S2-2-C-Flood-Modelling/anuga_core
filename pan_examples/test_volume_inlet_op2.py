@@ -149,7 +149,7 @@ previous_culvert_volume = 0.0
 
 domain.set_name("anuga_swmm")
 
-for t in domain.evolve(yieldstep=1.0, finaltime=120.0):
+for t in domain.evolve(yieldstep=1.0, finaltime=50.0):
     print("\n")
     # print(f"coupling step: {t}")
     domain.print_timestepping_statistics()

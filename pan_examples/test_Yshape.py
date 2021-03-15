@@ -29,7 +29,7 @@ dx = dy = 0.2  # .1           # Resolution: Length of subdivisions on both axes
 points, vertices, boundary = rectangular_cross(int(length / dx), int(width / dy),
                                                len1=length, len2=width)
 domain = Domain(points, vertices, boundary)
-domain.set_name('anuga_swmm')  # Output name based on script name. You can add timestamp=True
+domain.set_name('Y_shape_2inlets')  # Output name based on script name. You can add timestamp=True
 print(domain.statistics())
 
 
@@ -104,24 +104,75 @@ op_inlet1 = Inlet_operator(domain, region_inlet1, Q=0.0, zero_velocity=True)
 op_inlet2 = Inlet_operator(domain, region_inlet2, Q=0.0, zero_velocity=True)
 op_outlet = Inlet_operator(domain, region_outlet, Q=0.0, zero_velocity=False)
 
-op_input1 = Inlet_operator(domain, region_input1, Q=0.25)
-op_input2 = Inlet_operator(domain, region_input2, Q=0.25)
+op_input1 = Inlet_operator(domain, region_input1, Q=1.25)
+op_input2 = Inlet_operator(domain, region_input2, Q=1.25)
 
 x = domain.centroid_coordinates[:, 0]
 indices = num.where(x < 10)
-anuga.Set_stage(domain, stage=-2.75, indices=indices)()
+# anuga.Set_stage(domain, stage=-2.75, indices=indices)()
 
 # ------------------------------------------------------------------------------
 # couple SWMM
 # ------------------------------------------------------------------------------
 # TODO: couple SWMM
+from pyswmm import Simulation, Nodes, Links
+
+sim = Simulation('./2inlets_simple.inp')
+sim.start()
+print('\nsim start?? ',sim._isStarted)
+node_names = ['J1', 'J2', 'Out1']
+link_names = ['C1', 'C2']
+
+nodes = [Nodes(sim)[names] for names in node_names]
+links = [Links(sim)[names] for names in link_names]
+
+# culvert1 = Links(sim)['C1']
+# culvert2 = Links(sim)['C2']
+# inlet1 = Nodes(sim)['J1']
+# inlet2 = Nodes(sim)['J2']
+# outlet = Nodes(sim)['Out1']
+
+# type, area, length, orifice_coeff, free_weir_coeff, submerged_weir_coeff
+# inlet_opening = inlet.create_opening(4, 2.0, 1.0, 0.6, 1.6, 1.0)
+# inlet.coupling_area = 0.5
+# print('inlet_opening', inlet_opening)
+
+print('\n')
+
+for i in range(len(node_names)):
+    opening = nodes[i].create_opening(4, 1.0, 1.0, 0.6, 1.6, 1.0)
+    nodes[i].coupling_area = 1.
+    # print('node opening? ', node_names[i], ' ', opening)
+    print('node coupled? ', node_names[i], ' ', nodes[i].is_coupled)
 
 
 
 
-for t in domain.evolve(yieldstep=1.0, finaltime=20.0):
+for t in domain.evolve(yieldstep=1.0, finaltime=15.0):
     print('\n')
     domain.print_timestepping_statistics()
+
+    # -----------------
+    # print info
+    # -----------------
+    # TODO: show necessary data
+
+    print(op_inlet1.inlet.get_average_depth())
+    nodes[0].overland_depth = op_inlet1.inlet.get_average_depth()
+    nodes[1].overland_depth = op_inlet2.inlet.get_average_depth()
+
+    volumes = sim.coupling_step(1.0)
+    volumes_in_out = volumes[-1][-1]
+
+    Q_inlet1 = nodes[0].total_inflow
+    print(Q_inlet1)
+    Q_inlet2 = nodes[1].total_inflow
+    Q_outlet = nodes[2].total_inflow
+
+    op_inlet1.set_Q(Q_inlet1)
+    op_inlet2.set_Q(Q_inlet2)
+    op_outlet.set_Q(Q_outlet)
+
 
 
 

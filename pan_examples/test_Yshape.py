@@ -104,8 +104,8 @@ op_inlet1 = Inlet_operator(domain, region_inlet1, Q=0.0, zero_velocity=True)
 op_inlet2 = Inlet_operator(domain, region_inlet2, Q=0.0, zero_velocity=True)
 op_outlet = Inlet_operator(domain, region_outlet, Q=0.0, zero_velocity=False)
 
-op_input1 = Inlet_operator(domain, region_input1, Q=1.25)
-op_input2 = Inlet_operator(domain, region_input2, Q=1.25)
+op_input1 = Inlet_operator(domain, region_input1, Q=2.25)
+op_input2 = Inlet_operator(domain, region_input2, Q=2.25)
 
 x = domain.centroid_coordinates[:, 0]
 indices = num.where(x < 10)
@@ -117,7 +117,7 @@ indices = num.where(x < 10)
 # TODO: couple SWMM
 from pyswmm import Simulation, Nodes, Links
 
-sim = Simulation('./2inlets_simple.inp')
+sim = Simulation('./3inlets_simple.inp')
 sim.start()
 print('\nsim start?? ',sim._isStarted)
 node_names = ['J1', 'J2', 'Out1']
@@ -140,18 +140,21 @@ links = [Links(sim)[names] for names in link_names]
 print('\n')
 
 for i in range(len(node_names)):
-    opening = nodes[i].create_opening(4, 1.0, 1.0, 0.6, 1.6, 1.0)
+    opening = nodes[i].create_opening(4, 1.0, 4.0, 0.6, 1.6, 1.0)
     nodes[i].coupling_area = 1.
     # print('node opening? ', node_names[i], ' ', opening)
     print('node coupled? ', node_names[i], ' ', nodes[i].is_coupled)
 
 
+time_input_stop = 5
 
-
-for t in domain.evolve(yieldstep=1.0, finaltime=15.0):
+for t in domain.evolve(yieldstep=1.0, finaltime=25.0):
     print('\n')
     domain.print_timestepping_statistics()
 
+    if t > time_input_stop:
+        op_input1.set_Q(0.)
+        op_input2.set_Q(0.)
     # -----------------
     # print info
     # -----------------
@@ -164,9 +167,9 @@ for t in domain.evolve(yieldstep=1.0, finaltime=15.0):
     volumes = sim.coupling_step(1.0)
     volumes_in_out = volumes[-1][-1]
 
-    Q_inlet1 = nodes[0].total_inflow
+    Q_inlet1 = -nodes[0].total_inflow
     print(Q_inlet1)
-    Q_inlet2 = nodes[1].total_inflow
+    Q_inlet2 = -nodes[1].total_inflow
     Q_outlet = nodes[2].total_inflow
 
     op_inlet1.set_Q(Q_inlet1)

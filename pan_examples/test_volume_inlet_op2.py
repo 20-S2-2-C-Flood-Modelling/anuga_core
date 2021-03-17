@@ -158,16 +158,16 @@ for t in domain.evolve(yieldstep=1.0, finaltime=50.0):
     # FIXME SR: Don't know why including inlet.depth seems to reconcile the volumes
     # Note that including inlet.coupling_area doesnt seem to work
     total_volume = domain.get_water_volume() + culvert.volume - inlet.depth
-    print("total volume: ", total_volume)
-    print("correct volume: ", initial_volume + t * 0.25)
-    print("domain volume: ", domain.get_water_volume())
-
-    print('Discrepancy', initial_volume + t * 0.25 - total_volume)
-
-    print('cum inlet_flow', inlet_flow)
-    print('cum outlet_flow', outlet_flow)
-    print('cum pipe flow', inlet_flow + outlet_flow)
-    # print("inlet_discrepency",inlet_discrepency)
+    # print("total volume: ", total_volume)
+    # print("correct volume: ", initial_volume + t * 0.25)
+    # print("domain volume: ", domain.get_water_volume())
+    #
+    # print('Discrepancy', initial_volume + t * 0.25 - total_volume)
+    #
+    # print('cum inlet_flow', inlet_flow)
+    # print('cum outlet_flow', outlet_flow)
+    # print('cum pipe flow', inlet_flow + outlet_flow)
+    # # print("inlet_discrepency",inlet_discrepency)
 
     previous_culvert_volume = culvert.volume
 
